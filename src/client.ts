@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import camelCase from 'camelcase-keys'
 import snakeCase from 'snakecase-keys'
 import { Options } from './@types'
+import rateLimit from 'axios-rate-limit'
 
 export default function MailerLiteClient(apiKey: string, {
   axiosOptions = {},
@@ -22,7 +23,7 @@ export default function MailerLiteClient(apiKey: string, {
     },
   }
 
-  const client: AxiosInstance = axios.create(axiosConfig)
+  const client: AxiosInstance = rateLimit(axios.create(axiosConfig), { maxRequests: 1, perMilliseconds: 1000 })
 
   if (useCaseConverter) {
     client.interceptors.request.use(
